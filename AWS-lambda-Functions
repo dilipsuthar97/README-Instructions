@@ -1,0 +1,58 @@
+## Create & Deploy AWS Lambda Functions
+Prewritten example of lambda functions and deployment guide.
+
+## About AWS Lambda
+Lambda is a compute service that lets you run your code without provisioning or managing servers. 
+Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging.
+With Lambda, you can run code for virtually any type of application or backend service.
+
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
+
+### List of prewritten lambda functions
+- [x] verifyToken
+    - verify token is a function which verify the jwt token passed with the API request.
+    - It will check for the token pattern, contains valid payload data and token expiration time.
+    - After successfully verify the token it forward the request as success otherwise as failed.
+- [ ] convertImageToWebp
+
+## How to deploy functions to AWS
+1. First install AWS CLI in your system. Download it from [here](https://aws.amazon.com/cli/)
+2. Write your own function by initializing empty npm project.
+    1. `npm init -y` commands create __package.json__ file in current directory
+    2. NOTE: Make sure you create seperate folder for each lambda functions and initialize empty npm project inside.
+    3. create __index.js__ file and add below hadler function.
+        ```
+        // cloudfront viewer request handler for edge lambda
+        var response401 = {
+            statusCode: 401,
+            statusDescription: 'Unauthorized',
+            body: 'Unauthorized',
+        };
+
+        exports.handler = async (event, context, callback) => {
+            var request = event.Records[0].cf.request;
+            /**
+             * Write your code...
+             */
+            return callback(null, response401); // For failure
+            return callback(null, request); // For success
+        }
+        ```
+    4. Or select from prebuilt functions.
+3. Login to AWS CLI using IAM __accessKey__ and __secretAccessKey__
+    1. Obtain your secret keys from AWS IAM console from users section in left menu
+    2. Hit `aws configure` command for login via secret keys
+4. After login create zip folder of your lambda function folder.
+    1. navigate to lambda function folder.
+    2. `zip -r function.zip .` create zip
+5. Create lambda function with console
+    1. Open the [Functions page](https://console.aws.amazon.com/lambda/home#/functions) on the Lambda console.
+    2. Choose Create function.
+    3. Under Basic information, do the following:
+        1. For Function name, enter my-function.
+        2. For Runtime, confirm that Node.js 14.x is selected. Note that Lambda provides runtimes for .NET (PowerShell, C#), Go, Java, Node.js, Python, and Ruby.
+    4. Choose Create function.
+6. Now come back to your system
+    1. Deploy function to AWS lambda using below command
+    2. `aws lambda update-function-code --function-name VerifyTokenForS3Media --zip-file fileb://function.zip`
+5. Open aws console in browser and check your code 
